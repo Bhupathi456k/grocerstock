@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # 🍊 GrocerStock: Smart Inventory Manager
 
 A dynamic, full-stack application for managing grocery and vegetable inventory with automated data entry and barcode functionality.
@@ -236,4 +236,4 @@ For support and questions:
 **GrocerStock** - Making inventory management smart, simple, and efficient. 🍊
 =======
 # grocerstock
->>>>>>> 89911f7a81b611aa6e0245cf02f1b583a69d6334
+
