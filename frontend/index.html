@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrocerStock - Smart Inventory Manager</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="logo">
+                <h1>🍊 GrocerStock</h1>
+                <p>Smart Inventory Manager</p>
+            </div>
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app-container hidden">
+        <!-- Navigation Header -->
+        <header class="header">
+            <nav class="navbar">
+                <div class="nav-brand">
+                    <h1>🍊 GrocerStock</h1>
+                </div>
+                <div class="nav-links">
+                    <a href="#dashboard" class="nav-link active" data-page="dashboard">Dashboard</a>
+                    <a href="#inventory" class="nav-link" data-page="inventory">Inventory</a>
+                    <a href="#scanner" class="nav-link" data-page="scanner">Scan</a>
+                    <a href="#barcode-generator" class="nav-link" data-page="barcode-generator">Generate</a>
+                    <div class="user-menu">
+                        <button id="user-menu-btn" class="user-btn">
+                            <span id="user-name">User</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div id="user-dropdown" class="user-dropdown hidden">
+                            <a href="#profile" class="dropdown-item">Profile</a>
+                            <a href="#settings" class="dropdown-item">Settings</a>
+                            <button id="logout-btn" class="dropdown-item logout">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page active">
+                <div class="page-header">
+                    <h2>Dashboard</h2>
+                    <p>Your inventory at a glance</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-info">
+                            <h3 id="total-items">0</h3>
+                            <p>Total Items</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏰</div>
+                        <div class="stat-info">
+                            <h3 id="expiring-soon">0</h3>
+                            <p>Expiring Soon</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-info">
+                            <h3 id="categories-count">0</h3>
+                            <p>Categories</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-info">
+                            <h3 id="ai-suggestions">0</h3>
+                            <p>AI Suggestions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-sections">
+                    <section class="section">
+                        <h3>Recent Items</h3>
+                        <div id="recent-items" class="items-grid">
+                            <!-- Recent items will be loaded here -->
+                        </div>
+                    </section>
+
+                    <section class="section">
+                        <h3>Expiring Soon</h3>
+                        <div id="expiring-items" class="items-list">
+                            <!-- Expiring items will be loaded here -->
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Inventory Page -->
+            <div id="inventory-page" class="page">
+                <div class="page-header">
+                    <h2>Inventory</h2>
+                    <div class="page-actions">
+                        <button id="add-item-btn" class="btn btn-primary">Add Item</button>
+                        <button id="filter-btn" class="btn btn-secondary">Filter</button>
+                    </div>
+                </div>
+                
+                <div class="inventory-controls">
+                    <div class="search-box">
+                        <input type="text" id="search-input" placeholder="Search inventory...">
+                        <button id="search-btn" class="search-btn">🔍</button>
+                    </div>
+                    <div class="filter-options hidden" id="filter-options">
+                        <select id="category-filter">
+                            <option value="">All Categories</option>
+                        </select>
+                        <select id="status-filter">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="expiring_soon">Expiring Soon</option>
+                            <option value="expired">Expired</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="inventory-items" class="items-grid">
+                    <!-- Inventory items will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Scanner Page -->
+            <div id="scanner-page" class="page">
+                <div class="page-header">
+                    <h2>Scan Barcode</h2>
+                    <p>Point your camera at a product barcode</p>
+                </div>
+                
+                <div class="scanner-container">
+                    <div id="scanner-overlay" class="scanner-overlay hidden">
+                        <div class="scanner-content">
+                            <video id="scanner-video" class="scanner-video" autoplay playsinline></video>
+                            <div class="scanning-frame"></div>
+                            <div id="scan-feedback" class="scan-feedback info">Point camera at barcode</div>
+                            <div class="scanner-actions">
+                                <button id="cancel-scan-btn" class="btn btn-secondary">Cancel</button>
+                                <button id="manual-entry-btn" class="btn btn-primary">Manual Entry</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scanner-actions-main">
+                        <button id="start-scan-btn" class="btn btn-primary btn-large">
+                            🎥 Start Scanning
+                        </button>
+                        <button id="manual-entry-main-btn" class="btn btn-secondary btn-large">
+                            ✏️ Manual Entry
+                        </button>
+                    </div>
+
+                    <!-- Manual Entry Form -->
+                    <div id="manual-entry-form" class="manual-entry-form hidden">
+                        <h3>Manual Product Entry</h3>
+                        <form id="product-form">
+                            <div class="form-group">
+                                <label for="product-name">Product Name *</label>
+                                <input type="text" id="product-name" name="product-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-brand">Brand</label>
+                                <input type="text" id="product-brand" name="product-brand">
+                            </div>
+                            <div class="form-group">
+                                <label for="product-category">Category</label>
+                                <select id="product-category" name="product-category">
+                                    <option value="">Select Category</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="expiry-date">Expiry Date</label>
+                                <input type="date" id="expiry-date" name="expiry-date">
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity">Quantity</label>
+                                <input type="number" id="quantity" name="quantity" value="1" min="0.1" step="0.1">
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" id="cancel-manual-btn" class="btn btn-secondary">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Add to Inventory</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barcode Generator Page -->
+            <div id="barcode-generator-page" class="page">
+                <div class="page-header">
+                    <h2>Generate Barcode</h2>
+                    <p>Create custom barcodes for non-barcoded items</p>
+                </div>
+                
+                <div class="generator-container">
+                    <form id="barcode-generator-form" class="generator-form">
+                        <div class="form-group">
+                            <label for="barcode-product-name">Product Name *</label>
+                            <input type="text" id="barcode-product-name" name="product-name" required 
+                                   placeholder="e.g., Organic Apples - Lot 1">
+                        </div>
+                        <div class="form-group">
+                            <label for="barcode-category">Category</label>
+                            <select id="barcode-category" name="category">
+                                <option value="">Select Category</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="barcode-weight">Weight/Quantity (Optional)</label>
+                            <input type="text" id="barcode-weight" name="weight" 
+                                   placeholder="e.g., 500g, 1kg, 12 pieces">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-large">Generate Barcode</button>
+                    </form>
+
+                    <div id="barcode-preview" class="barcode-preview hidden">
+                        <h3>Generated Barcode</h3>
+                        <div class="barcode-result">
+                            <div class="barcode-image">
+                                <img id="barcode-img" src="" alt="Generated Barcode">
+                            </div>
+                            <div class="barcode-info">
+                                <h4 id="barcode-product-display"></h4>
+                                <p><strong>Barcode:</strong> <span id="barcode-code"></span></p>
+                                <p><strong>Category:</strong> <span id="barcode-category-display"></span></p>
+                                <p><strong>Weight:</strong> <span id="barcode-weight-display"></span></p>
+                            </div>
+                        </div>
+                        <div class="barcode-actions">
+                            <button id="download-barcode" class="btn btn-secondary">Download PNG</button>
+                            <button id="print-barcode" class="btn btn-secondary">Print</button>
+                            <button id="generate-another" class="btn btn-primary">Generate Another</button>
+                        </div>
+                    </div>
+
+                    <div class="my-barcodes-section">
+                        <h3>My Generated Barcodes</h3>
+                        <div id="my-barcodes-list" class="barcodes-list">
+                            <!-- Generated barcodes will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login/Signup Pages (Initially Hidden) -->
+            <div id="login-page" class="page auth-page">
+                <div class="auth-container">
+                    <h2>Welcome Back</h2>
+                    <form id="login-form" class="auth-form">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                    </form>
+                    <p class="auth-switch">
+                        Don't have an account? <a href="#signup" id="show-signup">Sign up</a>
+                    </p>
+                </div>
+            </div>
+
+            <div id="signup-page" class="page auth-page hidden">
+                <div class="auth-container">
+                    <h2>Create Account</h2>
+                    <form id="signup-form" class="auth-form">
+                        <div class="form-group">
+                            <label for="signup-username">Username</label>
+                            <input type="text" id="signup-username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-email">Email</label>
+                            <input type="email" id="signup-email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-password">Password</label>
+                            <input type="password" id="signup-password" name="password" required minlength="8">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-confirm-password">Confirm Password</label>
+                            <input type="password" id="signup-confirm-password" name="confirm-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+                    </form>
+                    <p class="auth-switch">
+                        Already have an account? <a href="#login" id="show-login">Sign in</a>
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay hidden">
+            <div class="loading-spinner-large"></div>
+            <p>Loading...</p>
+        </div>
+
+        <!-- Notification System -->
+        <div id="notification-container" class="notification-container"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/filesaver.js@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/scanner.js"></script>
+    <script src="js/inventory.js"></script>
+    <script src="js/barcode-generator.js"></script>
+    <script src="js/realtime.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
